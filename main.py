@@ -44,3 +44,26 @@ print(action_first)
 action_take = rdd.take(3)
 print(action_take)
 
+action_reduce = rdd.reduce(lambda a, b: a if a > b else b)
+print(action_reduce)
+
+# cache:
+# since rdd will not execute (charge in the cache) untill a given action, so if we need more then one action, spark will start over on each time.
+# Therefore the solution is charge the RDD in the cache manually.
+
+list = ["Hadoop", "Spark", "Hive"]
+rdd = sc.parallelize(list)
+rdd.cache()
+print(rdd.count())
+print(', '.join(rdd.collect()))
+rdd.unpersist() # delete this RDD in the cache.
+
+# partition
+# we can set spark.default.parallelism to making number of partition.
+# in local mode: it's the number of cpu core by default.
+# in Mesos: it's 8.
+# in Standalone or YARN: max(2, all cpu core in the clusters)
+list = [1,2,3,4,5]
+rdd = sc.parallelize(list, 2)
+
+#%% key value RDD:
